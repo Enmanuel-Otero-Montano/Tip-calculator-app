@@ -14,26 +14,39 @@ let personsT
 reset.disabled = true
 zero.hidden = true
 
+const recorrerBotones = () => {
+    for(let button of buttons) {
+        button.classList.remove("active-tip")
+    }
+}
+
 bill.addEventListener("change", () => {
-    billTotal = bill.value  
+    billTotal = bill.value 
 })
 
 persons.addEventListener("input", () => {
-    if(persons.value > 0) {
-        personsT = persons.value
+    personsT = Number(persons.value)
+    recorrerBotones()   
+    if(personsT > 0 && Number.isInteger(personsT)) {
         let totalPersonFixed
         totalPersonFixed = billTotal / personsT
         totalPerson.value = `\$${totalPersonFixed.toFixed(2)}`
         persons.required = false
         zero.hidden = true
         path.setAttribute("fill", "#9EBBBD")
+    }else {
+        zero.textContent = "Invalid"
+        zero.hidden = false
+        path.setAttribute("fill", "red")
+        persons.required = true
+        totalPerson.value = ""
+        tipPerson.value = ""
     }
 })
 
-
 for (let i=0; i<buttons.length; i++) {
     buttons[i].addEventListener("click", () => {
-        if(persons.value < 1) {
+        if(persons.value < 1 || !Number.isInteger(personsT)) {
             persons.required = true
             zero.hidden = false
             path.setAttribute("fill", "red")
@@ -51,7 +64,7 @@ for (let i=0; i<buttons.length; i++) {
             }
             buttons[i].classList.add("active-tip")
         }
-            if(billTotal.length > 0 && personsT.length > 0) {
+            if(billTotal.length > 0 && personsT > 0) {
                 reset.disabled = false
                 persons.required = false
                 zero.hidden = true
@@ -73,30 +86,29 @@ custom.addEventListener("input", () => {
         reset.disabled = false
         persons.required = false
         zero.hidden = true
+        path.setAttribute("fill", "#9EBBBD")
     }else if(custom.value == 0) {
+        let totalPersonFixed
+        totalPersonFixed = billTotal / personsT
+        totalPerson.value = `\$${totalPersonFixed.toFixed(2)}`
         reset.disabled = true
         persons.required = false
         zero.hidden = true
-        path.setAttribute("fill", "#9EBBBD")
-
+        tipPerson.value = ""
     }else {
         persons.required = true
         zero.hidden = false
         custom.value = ""
         path.setAttribute("fill", "red")
     }
-    for(let button of buttons) {
-        button.classList.remove("active-tip")
-    }
+    recorrerBotones()
 })
 
 reset.addEventListener("click", () => {
     bill.value = ""
     persons.value = ""
     custom.value = ""
-    for(let button of buttons) {
-        button.classList.remove("active-tip")
-    }
+    recorrerBotones()
     const resetDisabled = () => {
         reset.disabled = true
     }
