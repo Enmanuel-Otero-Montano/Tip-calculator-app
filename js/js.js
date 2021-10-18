@@ -20,6 +20,12 @@ const recorrerBotones = () => {
     }
 }
 
+const notificacionDeError = () => {
+    persons.required = true
+    zero.hidden = false
+    path.setAttribute("fill", "red")
+}
+
 bill.addEventListener("change", () => {
     billTotal = bill.value 
 })
@@ -35,21 +41,17 @@ persons.addEventListener("input", () => {
         zero.hidden = true
         path.setAttribute("fill", "#9EBBBD")
     }else {
-        zero.textContent = "Invalid"
-        zero.hidden = false
-        path.setAttribute("fill", "red")
-        persons.required = true
         totalPerson.value = ""
         tipPerson.value = ""
+        zero.textContent = "Invalid"
+        notificacionDeError()
     }
 })
 
 for (let i=0; i<buttons.length; i++) {
     buttons[i].addEventListener("click", () => {
         if(persons.value < 1 || !Number.isInteger(personsT)) {
-            persons.required = true
-            zero.hidden = false
-            path.setAttribute("fill", "red")
+            notificacionDeError()
         }else {
             let tip = buttons[i].value
             let tipPersonFixed
@@ -96,10 +98,8 @@ custom.addEventListener("input", () => {
         zero.hidden = true
         tipPerson.value = ""
     }else {
-        persons.required = true
-        zero.hidden = false
         custom.value = ""
-        path.setAttribute("fill", "red")
+        notificacionDeError()
     }
     recorrerBotones()
 })
@@ -107,7 +107,10 @@ custom.addEventListener("input", () => {
 reset.addEventListener("click", () => {
     bill.value = ""
     persons.value = ""
+    persons.required = false
     custom.value = ""
+    zero.hidden = true
+    path.setAttribute("fill", "#9EBBBD")
     recorrerBotones()
     const resetDisabled = () => {
         reset.disabled = true
