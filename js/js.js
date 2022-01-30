@@ -5,6 +5,7 @@ const tipPerson = document.getElementById("tip")
 const totalPerson = document.getElementById("total")
 const reset = document.getElementById("reset")
 const zero = document.getElementById("zero")
+const emptyBill = document.getElementById("empty-bill")
 const path = document.getElementById("path")
 const buttons = [...document.querySelectorAll(".button")]
 
@@ -13,6 +14,7 @@ let personsT
 
 reset.disabled = true
 zero.hidden = true
+emptyBill.hidden = true
 
 const recorrerBotones = () => {
     for(let button of buttons) {
@@ -26,8 +28,9 @@ const notificacionDeError = () => {
     path.setAttribute("fill", "red")
 }
 
-bill.addEventListener("change", () => {
-    billTotal = bill.value 
+bill.addEventListener("input", () => {
+    billTotal = bill.value
+    emptyBill.hidden = true 
 })
 
 persons.addEventListener("input", () => {
@@ -40,6 +43,10 @@ persons.addEventListener("input", () => {
         persons.required = false
         zero.hidden = true
         path.setAttribute("fill", "#9EBBBD")
+    }else if(personsT > 0 && bill.value > 0) {
+        let totalPersonFixed
+        totalPersonFixed = billTotal / personsT
+        totalPerson.value = `\$${totalPersonFixed.toFixed(2)}`
     }else {
         totalPerson.value = ""
         tipPerson.value = ""
@@ -50,8 +57,10 @@ persons.addEventListener("input", () => {
 
 for (let i=0; i<buttons.length; i++) {
     buttons[i].addEventListener("click", () => {
-        if(persons.value < 1 || !Number.isInteger(personsT)) {
+        if(persons.value < 1 || !Number.isInteger(personsT)){
             notificacionDeError()
+        }else if(bill.value < 1){
+            emptyBill.hidden = false
         }else {
             let tip = buttons[i].value
             let tipPersonFixed
@@ -97,9 +106,11 @@ custom.addEventListener("input", () => {
         persons.required = false
         zero.hidden = true
         tipPerson.value = ""
-    }else {
+    }else{
         custom.value = ""
-        notificacionDeError()
+        /* notificacionDeError() */
+        zero.hidden = false
+        zero.textContent = "Invalid"
     }
     recorrerBotones()
 })
